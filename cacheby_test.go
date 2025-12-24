@@ -61,5 +61,39 @@ func TestCacheBy_SearchStrings(t *testing.T) {
 	} else if *val != "value1" {
 		t.Error("search should find correct value")
 	}
+}
+
+func TestCacheBy_RemoveString(t *testing.T) {
+	c := cacheby.NewCacheBy[string, string, string]()
+	c.Store("serial", "key1", "value1")
+	c.Store("serial", "key2", "value2")
+
+	val := c.Load("serial", "key2")
+
+	if val == nil {
+		t.Error("load should return stored value by serial and key")
+	} else if *val != "value2" {
+		t.Error("loaded value not equal stored by sserial and key")
+	}
+
+	c.Remove("serial", "key2")
+	val = c.Load("serial", "key2")
+	if val != nil {
+		t.Error("value should be deleted")
+	}
+}
+
+func TestCacheBy_LenString(t *testing.T) {
+	c := cacheby.NewCacheBy[string, string, string]()
+	c.Store("serial", "key1", "value1")
+	c.Store("serial", "key2", "value2")
+	length := c.Len("serial")
+	if length != 2 {
+		t.Error("length of value by key name serial should be equal 2")
+	}
+	length = c.Len("uuid")
+	if length != 0 {
+		t.Error("length of value by key name uuid should be equal 0")
+	}
 
 }

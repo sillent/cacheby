@@ -58,3 +58,24 @@ func (c *CacheBy[K, K2, V]) ListBy(key K) map[K2]*V {
 	}
 	return nil
 }
+
+func (c *CacheBy[K, K2, V]) Remove(byKeyName K, key K2) {
+	c.rw.Lock()
+	defer c.rw.Unlock()
+	kk, exist := c.data[byKeyName]
+	if exist {
+		delete(kk, key)
+	}
+}
+
+func (c *CacheBy[K, K2, V]) Clean() {
+	c.rw.Lock()
+	defer c.rw.Unlock()
+	c.data = make(map[K]map[K2]*V)
+}
+
+func (c *CacheBy[K, K2, V]) Len(byKeyName K) int {
+	c.rw.RLock()
+	defer c.rw.RUnlock()
+	return len(c.data[byKeyName])
+}
