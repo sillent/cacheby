@@ -37,6 +37,18 @@ func (c *CacheBy[K, K2, V]) Load(byKeyName K, key K2) *V {
 	return val
 }
 
+func (c *CacheBy[K, K2, V]) SearchAny(key K2) *V {
+	c.rw.RLock()
+	defer c.rw.RUnlock()
+	for _, k := range c.data {
+		v, exist := k[key]
+		if exist {
+			return v
+		}
+	}
+	return nil
+}
+
 func (c *CacheBy[K, K2, V]) ListBy(key K) map[K2]*V {
 	c.rw.RLock()
 	defer c.rw.RUnlock()
