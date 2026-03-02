@@ -59,6 +59,22 @@ func (c *CacheBy[K, K2, V]) ListBy(key K) map[K2]*V {
 	return nil
 }
 
+func (c *CacheBy[K, K2, V]) KeysBy(key K) []K2 {
+	c.rw.RLock()
+	defer c.rw.RUnlock()
+	kk, exist := c.data[key]
+	if exist {
+		list := make([]K2, len(kk))
+		idx := 0
+		for k := range kk {
+			list[idx] = k
+			idx += 1
+		}
+		return list
+	}
+	return []K2{}
+}
+
 func (c *CacheBy[K, K2, V]) Remove(byKeyName K, key K2) {
 	c.rw.Lock()
 	defer c.rw.Unlock()

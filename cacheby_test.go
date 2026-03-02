@@ -25,8 +25,8 @@ func TestCacheBy_StoreStrings(t *testing.T) {
 	} else if *val != "value2" {
 		t.Error("loaded value not equal stored by uuid and key")
 	}
-
 }
+
 func TestCacheBy_StoreInteger(t *testing.T) {
 	c := cacheby.NewCacheBy[string, string, int]()
 	c.Store("serial", "key1", 1)
@@ -46,7 +46,6 @@ func TestCacheBy_StoreInteger(t *testing.T) {
 	} else if *val != 2 {
 		t.Error("loaded value not equal stored by uuid and key")
 	}
-
 }
 
 func TestCacheBy_SearchStrings(t *testing.T) {
@@ -95,5 +94,15 @@ func TestCacheBy_LenString(t *testing.T) {
 	if length != 0 {
 		t.Error("length of value by key name uuid should be equal 0")
 	}
+}
 
+func TestCacheBy_KeysBy(t *testing.T) {
+	c := cacheby.NewCacheBy[string, string, string]()
+	c.Store("serial", "key1", "value1")
+	c.Store("serial", "key2", "value2")
+	c.Store("other serial", "key1", "value other")
+	keys := c.KeysBy("serial")
+	if len(keys) != 2 {
+		t.Error("lenght of keys by key name should be equal 2")
+	}
 }
